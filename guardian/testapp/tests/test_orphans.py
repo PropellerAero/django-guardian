@@ -1,11 +1,8 @@
 from __future__ import unicode_literals
 
-# Try the new app settings (Django 1.7) and fall back to the old system
-try:
-    from django.apps import apps as django_apps
-    auth_app = django_apps.get_app_config("auth")
-except ImportError:
-    from django.contrib.auth import models as auth_app
+from django.apps import apps as django_apps
+auth_app = django_apps.get_app_config("auth")
+
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 from django.test import TestCase
@@ -27,10 +24,8 @@ class OrphanedObjectPermissionsTest(TestCase):
         # Create objects for which we would assing obj perms
         self.target_user1 = User.objects.create(username='user1')
         self.target_group1 = Group.objects.create(name='group1')
-        self.target_obj1 = ContentType.objects.create(name='ct1', model='foo',
-            app_label='fake-for-guardian-tests')
-        self.target_obj2 = ContentType.objects.create(name='ct2', model='bar',
-            app_label='fake-for-guardian-tests')
+        self.target_obj1 = ContentType.objects.create(model='foo', app_label='fake-for-guardian-tests')
+        self.target_obj2 = ContentType.objects.create(model='bar', app_label='fake-for-guardian-tests')
         # Required if MySQL backend is used :/
         create_permissions(auth_app, [], 1)
 

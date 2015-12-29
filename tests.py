@@ -10,8 +10,8 @@ import os
 import sys
 import django
 
-os.environ["DJANGO_SETTINGS_MODULE"] = 'guardian.testsettings'
-from guardian import testsettings as settings
+os.environ["DJANGO_SETTINGS_MODULE"] = 'guardian.testapp.testsettings'
+from guardian.testapp import testsettings as settings
 
 settings.INSTALLED_APPS = (
     'django.contrib.auth',
@@ -33,19 +33,11 @@ def run_tests(settings):
 
     show_settings(settings, 'tests')
 
-    import django
-    if hasattr(django, 'setup'):
-        django.setup()
+    django.setup()
 
     TestRunner = get_runner(settings)
     test_runner = TestRunner(interactive=False)
-    # As we use different TestRunners for django < 1.8 and >= 1.8
-    # the arguments run_tests differs
-    if django.VERSION < (1, 8):
-        failures = test_runner.run_tests(['auth', 'guardian', 'testapp'])
-    else:
-        failures = test_runner.run_tests([
-            'django.contrib.auth', 'guardian', 'guardian.testapp'])
+    failures = test_runner.run_tests(['guardian'])
     return failures
 
 def main():
